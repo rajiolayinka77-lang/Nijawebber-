@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}NijaWeber — Search the World{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <h1>🌍 NijaWeber</h1>
+
+    <p>
+        Born in Nigeria. Built for the World.
+    </p>
+
+    <form action="{{ url_for('home') }}" method="GET" class="search-box">
+
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search the web..."
+            autocomplete="off"
+            autofocus
+        >
+
+        <button type="submit">
+            Search
+        </button>
+
+    </form>
+
+    {% if not query %}
+
+        <div class="grid" style="margin-top:50px;">
+
+            <div class="card">
+                <h2>✍️ Free Blogger Workspace</h2>
+                <p class="muted">
+                    Start your blog for free. Publish your ideas,
+                    stories and knowledge and reach new readers.
+                </p>
+
+                {% if current_user %}
+                    <a href="{{ url_for('dashboard') }}" class="btn">
+                        Open Workspace
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="btn">
+                        Start Free
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h2>🏢 Free Business Page</h2>
+                <p class="muted">
+                    Put your business online for free and help
+                    customers discover your products and services.
+                </p>
+
+                {% if current_user %}
+                    <a href="{{ url_for('dashboard') }}" class="btn">
+                        Create Business
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="btn">
+                        Create Free Page
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="card">
+                <h2>🔎 Discover</h2>
+                <p class="muted">
+                    Search articles and businesses published
+                    within the growing NijaWeber ecosystem.
+                </p>
+
+                <a href="{{ url_for('home') }}" class="btn btn-secondary">
+                    Search NijaWeber
+                </a>
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+{% if query %}
+
+<section>
+
+    <h2>
+        Search results for:
+        <strong>{{ query }}</strong>
+    </h2>
+
+    {% if results %}
+
+        {% for result in results %}
+
+            <div class="result">
+
+                <h3>
+                    <a href="{{ url_for('post', slug=result.slug) }}">
+                        {{ result.title }}
+                    </a>
+                </h3>
+
+                <p class="muted">
+                    By {{ result.author }}
+                    · {{ result.blog_title }}
+                </p>
+
+                <p>
+                    {{ result.content[:250] }}
+                    {% if result.content|length > 250 %}
+                        ...
+                    {% endif %}
+                </p>
+
+                <a href="{{ url_for('post', slug=result.slug) }}">
+                    Read article →
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card">
+
+            <h2>No results yet</h2>
+
+            <p class="muted">
+                NijaWeber couldn't find anything matching
+                "{{ query }}" in its current index.
+            </p>
+
+            <p>
+                As more bloggers and businesses join NijaWeber,
+                the search index will grow.
+            </p>
+
+            {% if not current_user %}
+                <a href="{{ url_for('register') }}" class="btn">
+                    Join NijaWeber Free
+                </a>
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endif %}
+
+{% endblock %}
